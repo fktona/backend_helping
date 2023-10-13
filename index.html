@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>POST and GET Request Test</title>
+</head>
+<body>
+  <h1>POST Request Test</h1>
+  <form id="post-form">
+    <label for="name">Name:</label>
+    <input type="text" id="name" name="name" required><br>
+
+    <label for="position">Position:</label>
+    <input type="text" id="position" name="position" required><br>
+
+    <label for="company">Company:</label>
+    <input type="text" id="company" name="company" required><br>
+
+    <label for="location">Location:</label>
+    <input type="text" id="location" name="location" required><br>
+
+    <label for="timeZone">Time Zone:</label>
+    <input type="text" id="timeZone" name="timeZone" required><br>
+
+    <label for="rating">Rating:</label>
+    <input type="number" id="rating" name="rating" required><br>
+
+    <label for="timeAvailable">Time Available:</label>
+    <input type="text" id="timeAvailable" name="timeAvailable" required><br>
+
+    <button type="submit">Submit POST Request</button>
+  </form>
+
+  <hr>
+
+  <h1>GET Request Test</h1>
+  <button id="get-data">Get Data</button>
+
+  <div id="get-response"></div>
+
+  <script>
+    // JavaScript to handle the POST request
+    document.getElementById("post-form").addEventListener("submit", async function (e) {
+      e.preventDefault();
+
+      const response = await fetch("http://localhost:3000/api/data", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          name: document.getElementById("name").value,
+          position: document.getElementById("position").value,
+          company: document.getElementById("company").value,
+          location: document.getElementById("location").value,
+          timeZone: document.getElementById("timeZone").value,
+          rating: parseInt(document.getElementById("rating").value),
+          timeAvailable: document.getElementById("timeAvailable").value,
+        }),
+      });
+
+      if (response.status === 201) {
+        alert("Data submitted successfully!");
+      } else {
+        alert("An error occurred while submitting data.");
+      }
+    });
+
+    // JavaScript to handle the GET request
+    document.getElementById("get-data").addEventListener("click", async function () {
+      const response = await fetch("http://localhost:3000/api/get_data");
+
+      if (response.status === 200) {
+        const data = await response.json();
+        const getResponse = document.getElementById("get-response");
+        getResponse.innerHTML = "<pre>" + JSON.stringify(data, null, 2) + "</pre>";
+      } else {
+        alert("An error occurred while fetching data.");
+      }
+    });
+  </script>
+</body>
+</html>
