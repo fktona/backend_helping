@@ -26,33 +26,33 @@ const upload = multer({
   },
 });
 
-cloudinary.config({ 
+cloudinary.config({
     cloud_name: 'dfxu5hvrw', 
     api_key: '235297942498392', 
     api_secret: '-N970A8IobIZ-n_KrHlkOeK7mmY' 
   });
 
-app.post('/api/data', upload.single('profilePicture'), async (req, res) => {
+app.post('/api/data', upload.single('contentImage'), async (req, res) => {
     
   try {
-    const { firstname,lastname, position, company, location, timeZone, rating, timeAvailable } = req.body;
-    const profilePictureBuffer = req.file.buffer;
+    const { firstname,lastname, date, time, title, topic, content,  } = req.body;
+    const contentImageBuffer = req.file.buffer;
 
     
     if (!req.file) {
-      return res.status(400).json({ error: 'Profile picture is required' });
+      return res.status(400).json({ error: 'content picture is required' });
     }
-    const profilePictureString = profilePictureBuffer.toString('base64')
+    const contentImageString = contentImageBuffer.toString('base64')
 
     
 
-    const profilePictureDataUri = `data:${req.file.mimetype};base64,${profilePictureBuffer.toString('base64')}`
+    const contentImageDataUri = `data:${req.file.mimetype};base64,${contentImageBuffer.toString('base64')}`
     
-    cloudinary.uploader.upload(profilePictureDataUri,
+    cloudinary.uploader.upload(contentImageDataUri,
       {
         resource_type: 'auto',
         public_id: `profilePictures/${uuid.v4()}`,
-        file: profilePictureString
+        file: contentImageString
       },
       (error, result) => {
         if (error) {
@@ -60,19 +60,18 @@ app.post('/api/data', upload.single('profilePicture'), async (req, res) => {
           return res.status(500).json({ error: 'Something went wrong' });
         }
 
-        const profilePictureURL = result.secure_url;
+        const contentImageURL = result.secure_url;
 
         const data = {
           id: uuid.v4(),
           firstname,
           lastname,
-          position,
-          company,
-          location,
-          timeZone,
-          rating,
-          timeAvailable,
-          profilePicture: profilePictureURL,
+          title,
+          date,
+          time,
+          topic,
+          content,
+          contentImage: contentImageURL,
         };
 
     

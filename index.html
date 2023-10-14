@@ -20,14 +20,7 @@
     <label for="location">Location:</label>
     <input type="text" id="location" name="location" required><br><br>
 
-    <label for="timeZone">Time Zone:</label>
-    <input type="text" id="timeZone" name="timeZone" required><br><br>
 
-    <label for="rating">Rating:</label>
-    <input type="number" id="rating" name="rating" required><br><br>
-
-    <label for="timeAvailable">Time Available:</label>
-    <input type="text" id="timeAvailable" name="timeAvailable" required><br><br>
 
     <label for="profilePicture">Profile Picture (Base64):</label>
     <input type="file" id="profilePicture" name="profilePicture" accept="image/*" required><br><br>
@@ -44,21 +37,18 @@
       const position = document.getElementById('position').value;
       const company = document.getElementById('company').value;
       const location = document.getElementById('location').value;
-      const timeZone = document.getElementById('timeZone').value;
-      const rating = parseInt(document.getElementById('rating').value);
-      const timeAvailable = document.getElementById('timeAvailable').value;
       const profilePicture = document.getElementById('profilePicture').files[0];
 
       const formData = new FormData();
       formData.append('firstname', lastname);
       formData.append('lastname', firstname);
-      formData.append('position', position);
-      formData.append('company', company);
-      formData.append('location', location);
-      formData.append('timeZone', timeZone);
-      formData.append('rating', rating);
-      formData.append('timeAvailable', timeAvailable);
-      formData.append('profilePicture', profilePicture);
+      formData.append('title', position);
+      formData.append('topic', company);
+      formData.append('content', location);
+      formData.append('date', "monday");
+     formData.append('time', "10pm");
+     // formData.append('timeAvailable', timeAvailable);
+      formData.append('contentImage', profilePicture);
 
       const response = await fetch('http://localhost:3000/api/data', {
         method: 'POST',
