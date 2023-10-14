@@ -20,7 +20,11 @@
     <label for="location">Location:</label>
     <input type="text" id="location" name="location" required><br><br>
 
+    <label for="date">Location:</label>
+    <input type="date" id="date" name="date" required><br><br>
 
+    <label for="time">Location:</label>
+    <input type="time" id="time" name="time" required><br><br>
 
     <label for="profilePicture">Profile Picture (Base64):</label>
     <input type="file" id="profilePicture" name="profilePicture" accept="image/*" required><br><br>
@@ -37,6 +41,8 @@
       const position = document.getElementById('position').value;
       const company = document.getElementById('company').value;
       const location = document.getElementById('location').value;
+      const date = document.getElementById('date').value;
+      const time = document.getElementById('time').value;
       const profilePicture = document.getElementById('profilePicture').files[0];
 
       const formData = new FormData();
@@ -45,8 +51,8 @@
       formData.append('title', position);
       formData.append('topic', company);
       formData.append('content', location);
-      formData.append('date', "monday");
-     formData.append('time', "10pm");
+      formData.append('date', date);
+     formData.append('time', time);
      // formData.append('timeAvailable', timeAvailable);
       formData.append('contentImage', profilePicture);
 
