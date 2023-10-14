@@ -1,55 +1,105 @@
 const express = require('express');
 const admin = require('firebase-admin');
-//const bodyParser = require('body-parser');
 const cors = require('cors');
+const cloudinary = require('cloudinary').v2; 
 const uuid = require('uuid');
-
+const multer = require('multer');
+const serviceAccount = require('./screat.json');
 
 const app = express();
 app.use(express.json());
-app.use(cors())
+app.use(cors());
+app.use(express.static('public'));
 
-const serviceAccount = require('./screat.json'); 
 admin.initializeApp({
-    credential: admin.credential.cert(serviceAccount),
-    databaseURL: "https://zur-backend-default-rtdb.firebaseio.com"
-  });
-  
-
+  credential: admin.credential.cert(serviceAccount),
+  databaseURL: 'https://zur-backend-default-rtdb.firebaseio.com',
+});
 
 const db = admin.firestore();
 
 
-app.post('/api/data', (req, res) => {
-  const {  name, position, company, location, timeZone, rating, timeAvailable } = req.body;
+const upload = multer({
+  storage: multer.memoryStorage(), 
+  limits: {
+    fileSize: 5 * 1024 * 1024, 
+  },
+});
 
-  const data = {
-    id: uuid.v4(),
-    name,
-    position,
-    company,
-    location,
-    timeZone,
-    rating,
-    timeAvailable,
-  };
+cloudinary.config({ 
+    cloud_name: 'dfxu5hvrw', 
+    api_key: '235297942498392', 
+    api_secret: '-N970A8IobIZ-n_KrHlkOeK7mmY' 
+  });
 
-  db.collection('workers').add(data)
-    .then((docRef) => {
-      console.log('Document written with ID:', docRef.id);
-      res.status(201).json({ message: 'Data created successfully' });
-    })
-    .catch((error) => {
-      console.error('Error adding document:', error);
-      res.status(500).json({ error: 'Something went wrong' });
-    });
+app.post('/api/data', upload.single('profilePicture'), async (req, res) => {
+    
+  try {
+    const { firstname,lastname, position, company, location, timeZone, rating, timeAvailable } = req.body;
+    const profilePictureBuffer = req.file.buffer;
+
+    
+    if (!req.file) {
+      return res.status(400).json({ error: 'Profile picture is required' });
+    }
+    const profilePictureString = profilePictureBuffer.toString('base64')
+
+    
+
+    const profilePictureDataUri = `data:${req.file.mimetype};base64,${profilePictureBuffer.toString('base64')}`
+    
+    cloudinary.uploader.upload(profilePictureDataUri,
+      {
+        resource_type: 'auto',
+        public_id: `profilePictures/${uuid.v4()}`,
+        file: profilePictureString
+      },
+      (error, result) => {
+        if (error) {
+          console.error('Error uploading image to Cloudinary:', error);
+          return res.status(500).json({ error: 'Something went wrong' });
+        }
+
+        const profilePictureURL = result.secure_url;
+
+        const data = {
+          id: uuid.v4(),
+          firstname,
+          lastname,
+          position,
+          company,
+          location,
+          timeZone,
+          rating,
+          timeAvailable,
+          profilePicture: profilePictureURL,
+        };
+
+    
+        db.collection('workers')
+          .add(data)
+          .then((docRef) => {
+            console.log('Document written with ID:', docRef.id);
+            res.status(201).json({ message: 'Data created successfully' });
+          })
+          .catch((error) => {
+            console.error('Error adding document:', error);
+            res.status(500).json({ error: 'Something went wrong' });
+          });
+      }
+    );
+  } catch (error) {
+    console.error('Error:', error);
+    res.status(500).json({ error: 'Something went wrong' });
+  }
 });
 
 
 app.get('/api/get_data', (req, res) => {
   const data = [];
 
-  db.collection('workers').get()
+  db.collection('workers')
+    .get()
     .then((querySnapshot) => {
       querySnapshot.forEach((doc) => {
         data.push(doc.data());
@@ -61,7 +111,6 @@ app.get('/api/get_data', (req, res) => {
       res.status(500).json({ error: 'Something went wrong' });
     });
 });
-
 
 const PORT = process.env.PORT || 3000;
 
