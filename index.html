@@ -94,6 +94,37 @@
 
     <label for="location">Location:</label>
     <input type="text" id="location" name="location" required><br><br>
+    
+        <label for="link">Link to mentor profile</label>
+    <input type="text" id="Link" name="link" required><br><br>
+     <label for="country">country</label>
+    <input type="text" id="country" name="country" required><br><br>
+     <label for="price">pricing</label>
+    <input type="text" id="price" name="price" required><br><br>
+    
+        <label for="nextavailable">nextavailable:</label>
+    <input type="date" id="nextavailable" name="nextavailable" required><br><br>
+    
+    <label for="timezone">Select Time Zone:</label>
+    <select id="timezone" name="timezone">
+        <option value="GMT">GMT (Greenwich Mean Time)</option>
+        <option value="EST">EST (Eastern Standard Time)</option>
+        <option value="GST">GST (Gulf Standard Time)</option>
+        <option value="CET">CET (Central European Time)</option>
+        <option value="PST">PST (Pacific Standard Time)</option>
+        <option value="IST">IST (Indian Standard Time)</option>
+    </select><br /> <br />
+    
+    
+    
+        <label for="available">available:</label>
+    <select id="available">
+      <option value="true">true</option>
+      <option value="false">false</option>
+    </select><br /><br />
+    
+    
+    
 
     <label for="date">Date:</label>
     <input type="date" id="date" name="date" required><br><br>
@@ -115,40 +146,51 @@
 
   
 
-  <script>
-    document.getElementById('submit-button').addEventListener('click', async () => {
-      
-      
-      const firstname = document.getElementById('firstname').value;
-      const lastname = document.getElementById('lastname').value;
-      const position = document.getElementById('position').value;
-      const company = document.getElementById('company').value;
-      const location = document.getElementById('location').value;
-      const date = document.getElementById('date').value;
-      const time = document.getElementById('time').value;
-      const profilePicture = document.getElementById('profilePicture').files[0];
-      document.getElementById('loading-spinner').style.display = 'flex';
-      const formData = new FormData();
-      formData.append('firstname', lastname);
-      formData.append('lastname', firstname);
-      formData.append('title', position);
-      formData.append('topic', company);
-      formData.append('content', location);
-      formData.append('date', date);
-     formData.append('time', time);
-     // formData.append('timeAvailable', timeAvailable);
-      formData.append('contentImage', profilePicture);
+<script>
+  document.getElementById('submit-button').addEventListener('click', async () => {
+    const firstname = document.getElementById('firstname').value;
+    const lastname = document.getElementById('lastname').value;
+    const position = document.getElementById('position').value;
+    const company = document.getElementById('company').value;
+    const location = document.getElementById('location').value;
+    const date = document.getElementById('date').value;
+    const time = document.getElementById('time').value;
+    const link = document.getElementById('Link').value;
+    const country = document.getElementById('country').value;
+    const price = document.getElementById('price').value;
+    const nextavailable = document.getElementById('nextavailable').value;
+    const timezone = document.getElementById('timezone').value;
+    const available = document.getElementById('available').value;
+    const profilePicture = document.getElementById('profilePicture').files[0];
+    
+    document.getElementById('loading-spinner').style.display = 'flex';
+    
+    const formData = new FormData();
+    formData.append('firstname', firstname);
+    formData.append('lastname', lastname);
+    formData.append('position', position);
+    formData.append('company', company);
+    formData.append('location', location);
+    formData.append('date', date);
+    formData.append('time', time);
+    formData.append('link', link);
+    formData.append('country', country);
+    formData.append('price', price);
+    formData.append('nextavailable', nextavailable);
+    formData.append('timezone', timezone);
+    formData.append('available', available);
+    formData.append('profilePicture', profilePicture);
 
-      const response = await fetch('https://cardbackendhngx.onrender.com/api/data', {
-        method: 'POST',
-        body: formData,
-      });
-
-      const responseData = await response.json();
-      document.getElementById('response').textContent = JSON.stringify(responseData, null, 2);
-      document.getElementById('loading-spinner').style.display = 'none'
-      
+    const response = await fetch('https://cardbackendhngx.onrender.com/api/data', {
+      method: 'POST',
+      body: formData,
     });
-  </script>
+
+    const responseData = await response.json();
+    document.getElementById('response').textContent = JSON.stringify(responseData, null, 2);
+    document.getElementById('loading-spinner').style.display = 'none';
+  });
+</script>
+
 </body>
 </html>
