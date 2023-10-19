@@ -35,13 +35,35 @@ cloudinary.config({
 app.post('/api/data', upload.single('contentImage'), async (req, res) => {
     
   try {
-    const { firstname,lastname, date, time, title, topic, content,  } = req.body;
+    const {
+      firstname,
+      lastname,
+      date,
+      time,
+      title,
+      topic,
+      content,
+      country,
+      pricing,
+      timezonetype,
+      nextAvailable,
+      linkToMentorProfile,
+      available 
+      
+    } = req.body
+      
     const contentImageBuffer = req.file.buffer;
+    
+    const urlPattern = /^(https?|ftp):\/\/[^\s/$.?#].[^\s]*$/;
+    if (!urlPattern.test(linkToMentorProfile)) {
+      return res.status(400).json({ error: 'Invalid URL format for "linkToMentorProfile"' });
+    }
 
     
     if (!req.file) {
       return res.status(400).json({ error: 'content picture is required' });
     }
+    
     const contentImageString = contentImageBuffer.toString('base64')
 
     
@@ -63,19 +85,24 @@ app.post('/api/data', upload.single('contentImage'), async (req, res) => {
         const contentImageURL = result.secure_url;
 
         const data = {
-          id: uuid.v4(),
-          firstname,
-          lastname,
-          title,
-          timezone:'GMT +1(Nigeria)',
-          review: 5.0,
-          nextAvailable:'14th, october 2023',
-          date,
-          time,
-          topic,
-          content,
-          contentImage: contentImageURL,
-        };
+  id: uuid.v4(),
+  firstname,
+  lastname,
+  title,
+  timezonetype,
+  country,
+  review: 5.0,
+  nextAvailable,
+  date,
+  time,
+  topic,
+  content,
+  contentImage: contentImageURL,
+  available,
+  pricing,
+  linkToMentorProfile,
+  timezone:`${timezonetype} ${country}`
+};
 
     
         db.collection('workers')
