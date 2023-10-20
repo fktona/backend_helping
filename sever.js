@@ -57,11 +57,15 @@ app.post('/api/data', upload.single('contentImage'), async (req, res) => {
     const urlPattern = /^(https?|ftp):\/\/[^\s/$.?#].[^\s]*$/;
     if (!urlPattern.test(linkToMentorProfile)) {
       return res.status(400).json({ error: 'Invalid URL format for "linkToMentorProfile"' });
+    }else{
+      console.log('ikay')
     }
 
     
     if (!req.file) {
       return res.status(400).json({ error: 'content picture is required' });
+    } else {
+      console.log("left")
     }
     
     const contentImageString = contentImageBuffer.toString('base64')

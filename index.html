@@ -181,7 +181,7 @@
     formData.append('available', available);
     formData.append('profilePicture', profilePicture);
 
-    const response = await fetch('https://cardbackendhngx.onrender.com/api/data', {
+    const response = await fetch('https://localhost:3000/api/data', {
       method: 'POST',
       body: formData,
     });
